@@ -1,4 +1,6 @@
-﻿using IoC.Pay;
+﻿using Consumer.Drone.AzureFunction.Config;
+using IoC.Pay;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -16,8 +18,12 @@ namespace Tests.Pay.TDD.Config
         void BuildServiceProvider()
         {
             var _services = new ServiceCollection();
+
+            IConfiguration configuration = StartConfiguration.Configuration;
+            _services.AddSingleton(x => configuration);
+
             _services.RegisterDbContextInMemory();
-            _services.RegisterServices(true);
+            _services.RegisterServices(configuration, true);
 
             ServiceProvider = _services.BuildServiceProvider();
         }

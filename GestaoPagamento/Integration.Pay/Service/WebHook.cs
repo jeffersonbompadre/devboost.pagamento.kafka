@@ -20,9 +20,9 @@ namespace Integration.Pay.Service
             _webHookMethod = configuration["WebHook:method"];
         }
 
-        public async Task<PostMethodResultDto> CallPostMethod(WebHookMethodRequestDto webHookMethodRequestDto)
+        public async Task<PostMethodResultDto> CallPostMethod(RequestPaymentDto requestPaymentDto)
         {
-            var jsonContent = new StringContent(JsonConvert.SerializeObject(webHookMethodRequestDto), Encoding.UTF8, "application/json");
+            var jsonContent = new StringContent(JsonConvert.SerializeObject(requestPaymentDto), Encoding.UTF8, "application/json");
             var postRequest = new PostMethodRequestDto(
                 url: _webHookUrl,
                 method: _webHookMethod,

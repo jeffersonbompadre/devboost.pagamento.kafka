@@ -9,7 +9,6 @@ using Integration.Pay.Interfaces;
 using Repository.Pay.UnitOfWork;
 using System;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace Domain.Pay.Services.CommandHandlers
@@ -19,14 +18,14 @@ namespace Domain.Pay.Services.CommandHandlers
         readonly IUnitOfWork _unitOfWork;
         readonly IMapper _mapper;
         readonly IPayAtOperatorService _payAtOperatorService;
-        readonly IWebHook _webHook;
+        readonly ISendPayToKafka _sendPayToKafka;
 
-        public CriarPaymentHandler(IUnitOfWork unitOfWork, IMapper mapper, IWebHook webHook, IPayAtOperatorService payAtOperatorService)
+        public CriarPaymentHandler(IUnitOfWork unitOfWork, IMapper mapper, ISendPayToKafka sendPayToKafka, IPayAtOperatorService payAtOperatorService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _payAtOperatorService = payAtOperatorService;
-            _webHook = webHook;
+            _sendPayToKafka = sendPayToKafka;
         }
 
         public async Task<ResponseResult> Handle(CriarPaymentCommand request)
@@ -37,9 +36,9 @@ namespace Domain.Pay.Services.CommandHandlers
                 return _response;
             // Chama MockAPI para tratar pagamento
             await CallMockApi(request);
-            // Chama  WebHook retornando o status do pagamento
+            // Envia o pagamento para uma fila no Kafka
             request.Status = 2;
-            await CallWebHook(request);
+            await SendPayToKafka(request);
             // retorna a operação para Controller
             return _response;
         }
@@ -54,10 +53,6 @@ namespace Domain.Pay.Services.CommandHandlers
             }
             // Armazena informação da transação de pagamento
             var payment = _mapper.Map<Payment>(request);
-
-            //Payment payment = new Payment(request.PayId, DateTime.Now, request.Name, request.Bandeira, request.NumeroCartao, request.Vencimento,
-            //    request.CodigoSeguranca, request.Valor, request.Status);
-
             await _unitOfWork.PaymentRepository.InsertAsync(payment);
             await _unitOfWork.CommitAsync();
             return true;
@@ -79,9 +74,9 @@ namespace Domain.Pay.Services.CommandHandlers
             });
         }
 
-        async Task CallWebHook(CriarPaymentCommand request)
+        async Task SendPayToKafka(CriarPaymentCommand request)
         {
-            var result = await _webHook.CallPostMethod(new WebHookMethodRequestDto
+            var requestPaymentDto = new RequestPaymentDto
             {
                 PayId = request.PayId,
                 CreatedAt = request.CreatedAt,
@@ -92,10 +87,11 @@ namespace Domain.Pay.Services.CommandHandlers
                 CodigoSeguranca = request.CodigoSeguranca,
                 Valor = (decimal)request.Valor,
                 Status = request.Status
-            });
-            if (result.StatusCode != HttpStatusCode.OK)
+            };
+            var result = await _sendPayToKafka.SendPay(requestPaymentDto);
+            if (result.Status == Confluent.Kafka.PersistenceStatus.NotPersisted)
             {
-                request.AddNotification("", result.ContentResult);
+                request.AddNotification("", result.Message.Value);
                 _response.AddNotifications(request.Notifications);
             }
         }
