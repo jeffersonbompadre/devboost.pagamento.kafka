@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Integration.Pay", "GestaoPa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pay.Mock", "GestaoPagamento\Pay.Mock\Pay.Mock.csproj", "{0460175E-EE16-4E1C-ABE0-6189ABC83EA4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pedido.Kafka", "Pedido.Kafka", "{1EF9D25D-82A2-415F-B62E-76D6C1062025}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gestao.Kafka", "Gestao.Kafka", "{1EF9D25D-82A2-415F-B62E-76D6C1062025}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drone.EnviarPedido.Api", "Drone.EnviarPedido.Api\Drone.EnviarPedido.Api.csproj", "{976FAFB8-220D-4304-9E5B-3803BA51339D}"
 EndProject

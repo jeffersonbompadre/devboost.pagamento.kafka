@@ -19,8 +19,9 @@ namespace Consumer.Drone.AzureFunction
         readonly string _userToken;
         readonly string _passwordToken;
 
-        readonly IPedidoService _pedidoService;
         readonly IAutorizationService _autorizationService;
+        readonly IPedidoService _pedidoService;
+        readonly IPagamentoService _pagamentoService;
         readonly IConfiguration _configuration;
 
         public QueueDeliveryBindFunction()
@@ -28,8 +29,9 @@ namespace Consumer.Drone.AzureFunction
             var _serviceProvider = new StartInjection().ServiceProvider;
 
             _configuration = _serviceProvider.GetService<IConfiguration>();
-            _pedidoService = _serviceProvider.GetService<IPedidoService>();
             _autorizationService = _serviceProvider.GetService<IAutorizationService>();
+            _pedidoService = _serviceProvider.GetService<IPedidoService>();
+            _pagamentoService = _serviceProvider.GetService<IPagamentoService>();
 
             _kafkaHost = _configuration["Kafka:host"];
             _kafkaTopic = _configuration["Kafka:topic"];
@@ -53,8 +55,8 @@ namespace Consumer.Drone.AzureFunction
             }
         }
 
-        [FunctionName(nameof(SampleConsumer))]
-        public void SampleConsumer([KafkaTrigger(
+        [FunctionName(nameof(PedidoConsumer))]
+        public void PedidoConsumer([KafkaTrigger(
             "omv.serveblog.net:29092",
             "devboost.delivery.pedido",
             ConsumerGroup = "CriarPedido",
@@ -64,6 +66,19 @@ namespace Consumer.Drone.AzureFunction
             var valuePedido = kafkaEvent.Value.ToString();
             logger.LogInformation(valuePedido);
             _pedidoService.RealizarPedido(Token, valuePedido).Wait();
+        }
+
+        [FunctionName(nameof(PagamentoConsumer))]
+        public void PagamentoConsumer([KafkaTrigger(
+            "omv.serveblog.net:29092",
+            "devboost.delivery.pagamento.kafka",
+            ConsumerGroup = "AtualziarPagamento",
+            Protocol = BrokerProtocol.Plaintext)] KafkaEventData<string> kafkaEvent,
+            ILogger logger)
+        {
+            var valueStatusPagamento = kafkaEvent.Value.ToString();
+            logger.LogInformation(valueStatusPagamento);
+            _pagamentoService.AtualizaStatusPedido(Token, valueStatusPagamento).Wait();
         }
     }
 }
