@@ -67,6 +67,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 		Document\LogisticaEntrega.png = Document\LogisticaEntrega.png
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F039974A-1A6D-4A76-B313-D79F8294A31D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devboost.Kafka.Test", "Devboost.Kafka.Test\Devboost.Kafka.Test.csproj", "{4F412048-2323-4A09-9D16-125A30648572}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -145,6 +149,10 @@ Global
 		{0C480527-C49A-4287-9794-5549312C275D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C480527-C49A-4287-9794-5549312C275D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C480527-C49A-4287-9794-5549312C275D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F412048-2323-4A09-9D16-125A30648572}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F412048-2323-4A09-9D16-125A30648572}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F412048-2323-4A09-9D16-125A30648572}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F412048-2323-4A09-9D16-125A30648572}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -171,6 +179,8 @@ Global
 		{8E252369-5B16-47F3-A112-5BD009DF8FDA} = {1EF9D25D-82A2-415F-B62E-76D6C1062025}
 		{04D2C69E-3012-4DE4-B4AC-DDF527F93479} = {1EF9D25D-82A2-415F-B62E-76D6C1062025}
 		{0C480527-C49A-4287-9794-5549312C275D} = {BFF2F2A2-32A3-4BA6-AE20-F7B780882712}
+		{F039974A-1A6D-4A76-B313-D79F8294A31D} = {1EF9D25D-82A2-415F-B62E-76D6C1062025}
+		{4F412048-2323-4A09-9D16-125A30648572} = {F039974A-1A6D-4A76-B313-D79F8294A31D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {08345D69-ACBC-44EC-BF93-542673AD566F}
